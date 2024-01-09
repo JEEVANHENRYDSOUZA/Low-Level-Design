@@ -1,3 +1,80 @@
 ## Proxy Pattern
 ### Introduction 
-1, 
+The Proxy Pattern is a structural design pattern that provides a surrogate or placeholder for another object to control access to it. In other words, a proxy class acts as an intermediary or placeholder, managing the interactions between the client and the real object.
+
+There are various types of proxies, each serving a specific purpose:
+
+1. **Virtual Proxy:**
+   - A virtual proxy is a placeholder for "expensive to create" objects. It defers the creation of the real object until it is needed. For example, loading a large image or initializing a complex object only when it is actually requested.
+
+2. **Protection Proxy:**
+   - A protection proxy controls access to the real object by adding security checks. It can be used to enforce access restrictions based on permissions or user roles.
+
+3. **Remote Proxy:**
+   - A remote proxy represents an object that is in a different address space, such as when dealing with objects in a remote server or a distributed system. The proxy in the local address space communicates with the real object in the remote address space.
+
+4. **Cache Proxy:**
+   - A cache proxy is responsible for caching results of expensive operations and returning the cached result when the same operation is requested again. This improves performance by avoiding redundant computations.
+
+5. **Smart (Reference Counting) Proxy:**
+   - A smart proxy keeps track of the references to the real object. It can be used for various purposes such as reference counting for garbage collection or releasing resources when the object is no longer in use.
+
+Here's a simple example of a virtual proxy in Java:
+
+```java
+// Subject interface
+interface Image {
+    void display();
+}
+
+// RealSubject class
+class RealImage implements Image {
+    private String filename;
+
+    public RealImage(String filename) {
+        this.filename = filename;
+        loadImageFromDisk();
+    }
+
+    private void loadImageFromDisk() {
+        System.out.println("Loading image: " + filename);
+    }
+
+    @Override
+    public void display() {
+        System.out.println("Displaying image: " + filename);
+    }
+}
+
+// Proxy class (Virtual Proxy)
+class ProxyImage implements Image {
+    private RealImage realImage;
+    private String filename;
+
+    public ProxyImage(String filename) {
+        this.filename = filename;
+    }
+
+    @Override
+    public void display() {
+        if (realImage == null) {
+            realImage = new RealImage(filename);
+        }
+        realImage.display();
+    }
+}
+
+// Client code
+public class ProxyPatternExample {
+    public static void main(String[] args) {
+        Image image1 = new ProxyImage("image1.jpg");
+
+        // The real image is loaded and displayed only when needed
+        image1.display();
+
+        // The real image is not reloaded, as it was already loaded
+        image1.display();
+    }
+}
+```
+
